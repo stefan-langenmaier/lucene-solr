@@ -312,7 +312,7 @@ public abstract class AbstractFullDistribZkTestBase extends AbstractDistribZkTes
         + "/control/data") : null);
     try (SolrClient client = createCloudClient("control_collection")) {
       assertEquals(0, CollectionAdminRequest
-          .createCollection("control_collection", 1, 1)
+          .createCollection("control_collection", "conf1", 1, 1)
           .setCreateNodeSet(controlJetty.getNodeName())
           .process(client).getStatus());
       }
@@ -380,7 +380,7 @@ public abstract class AbstractFullDistribZkTestBase extends AbstractDistribZkTes
     StringBuilder sb = new StringBuilder();
 
     assertEquals(0, CollectionAdminRequest
-        .createCollection(DEFAULT_COLLECTION, sliceCount, 1)
+        .createCollection(DEFAULT_COLLECTION, "conf1", sliceCount, 1)
         .setStateFormat(Integer.parseInt(getStateFormat()))
         .setCreateNodeSet("")
         .process(cloudClient).getStatus());
@@ -1605,7 +1605,7 @@ public abstract class AbstractFullDistribZkTestBase extends AbstractDistribZkTes
   }
 
   protected CollectionAdminResponse createCollection(Map<String,List<Integer>> collectionInfos, String collectionName, Map<String,Object> collectionProps, SolrClient client)  throws SolrServerException, IOException{
-    return createCollection(collectionInfos, collectionName, collectionProps, client, null);
+    return createCollection(collectionInfos, collectionName, collectionProps, client, "conf1");
   }
 
   // TODO: Use CollectionAdminRequest#createCollection() instead of a raw request
@@ -1640,6 +1640,8 @@ public abstract class AbstractFullDistribZkTestBase extends AbstractDistribZkTes
     }
     if (confSetName != null) {
       params.set("collection.configName", confSetName);
+    } else {
+      params.set("collection.configName", "conf1");
     }
 
     int clientIndex = random().nextInt(2);
@@ -1683,7 +1685,7 @@ public abstract class AbstractFullDistribZkTestBase extends AbstractDistribZkTes
         ZkStateReader.PULL_REPLICAS, getPullReplicaCount(),
         CREATE_NODE_SET, createNodeSetStr,
         ZkStateReader.MAX_SHARDS_PER_NODE, maxShardsPerNode),
-        client);
+        client, "conf1");
   }
 
   protected CollectionAdminResponse createCollection(Map<String, List<Integer>> collectionInfos,
