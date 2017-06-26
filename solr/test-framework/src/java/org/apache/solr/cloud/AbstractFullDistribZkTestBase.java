@@ -1600,8 +1600,8 @@ public abstract class AbstractFullDistribZkTestBase extends AbstractDistribZkTes
     super.destroyServers();
   }
 
-  protected CollectionAdminResponse createCollection(String collectionName, int numShards, int replicationFactor, int maxShardsPerNode) throws SolrServerException, IOException {
-    return createCollection(null, collectionName, numShards, replicationFactor, maxShardsPerNode, null, null);
+  protected CollectionAdminResponse createCollection(String collectionName, String configSetName, int numShards, int replicationFactor, int maxShardsPerNode) throws SolrServerException, IOException {
+    return createCollection(null, collectionName, configSetName, numShards, replicationFactor, maxShardsPerNode, null, null);
   }
 
   protected CollectionAdminResponse createCollection(Map<String,List<Integer>> collectionInfos, String collectionName, Map<String,Object> collectionProps, SolrClient client)  throws SolrServerException, IOException{
@@ -1673,7 +1673,7 @@ public abstract class AbstractFullDistribZkTestBase extends AbstractDistribZkTes
 
 
   protected CollectionAdminResponse createCollection(Map<String,List<Integer>> collectionInfos,
-      String collectionName, int numShards, int replicationFactor, int maxShardsPerNode, SolrClient client, String createNodeSetStr) throws SolrServerException, IOException {
+      String collectionName, String configSetName, int numShards, int replicationFactor, int maxShardsPerNode, SolrClient client, String createNodeSetStr) throws SolrServerException, IOException {
 
     int numNrtReplicas = useTlogReplicas()?0:replicationFactor;
     int numTlogReplicas = useTlogReplicas()?replicationFactor:0;
@@ -1685,7 +1685,7 @@ public abstract class AbstractFullDistribZkTestBase extends AbstractDistribZkTes
         ZkStateReader.PULL_REPLICAS, getPullReplicaCount(),
         CREATE_NODE_SET, createNodeSetStr,
         ZkStateReader.MAX_SHARDS_PER_NODE, maxShardsPerNode),
-        client, "conf1");
+        client, configSetName);
   }
 
   protected CollectionAdminResponse createCollection(Map<String, List<Integer>> collectionInfos,
@@ -1895,14 +1895,14 @@ public abstract class AbstractFullDistribZkTestBase extends AbstractDistribZkTes
     createCollection(collectionInfos, collName, props, client);
   }
 
-  protected void createCollectionRetry(String testCollectionName, int numShards, int replicationFactor, int maxShardsPerNode)
+  protected void createCollectionRetry(String testCollectionName, String configSetName, int numShards, int replicationFactor, int maxShardsPerNode)
       throws SolrServerException, IOException {
-    CollectionAdminResponse resp = createCollection(testCollectionName, numShards, replicationFactor, maxShardsPerNode);
+    CollectionAdminResponse resp = createCollection(testCollectionName, configSetName, numShards, replicationFactor, maxShardsPerNode);
     if (resp.getResponse().get("failure") != null) {
       CollectionAdminRequest.Delete req = CollectionAdminRequest.deleteCollection(testCollectionName);
       req.process(cloudClient);
 
-      resp = createCollection(testCollectionName, numShards, replicationFactor, maxShardsPerNode);
+      resp = createCollection(testCollectionName, configSetName, numShards, replicationFactor, maxShardsPerNode);
 
       if (resp.getResponse().get("failure") != null) {
         fail("Could not create " + testCollectionName);

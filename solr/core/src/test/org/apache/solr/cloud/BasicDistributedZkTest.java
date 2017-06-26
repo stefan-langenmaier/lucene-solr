@@ -616,7 +616,7 @@ public class BasicDistributedZkTest extends AbstractFullDistribZkTestBase {
 
   @Override
   protected CollectionAdminResponse createCollection(Map<String, List<Integer>> collectionInfos,
-                                                     String collectionName, int numShards, int numReplicas, int maxShardsPerNode, SolrClient client, String createNodeSetStr) throws SolrServerException, IOException {
+                                                     String collectionName, String configSetName, int numShards, int numReplicas, int maxShardsPerNode, SolrClient client, String createNodeSetStr) throws SolrServerException, IOException {
     // TODO: Use CollectionAdminRequest for this test
     ModifiableSolrParams params = new ModifiableSolrParams();
     params.set("action", CollectionAction.CREATE.toString());
@@ -634,7 +634,7 @@ public class BasicDistributedZkTest extends AbstractFullDistribZkTestBase {
       collectionInfos.put(collectionName, list);
     }
     params.set("name", collectionName);
-    params.set("collection.configName", "conf1");
+    params.set("collection.configName", configSetName);
     SolrRequest request = new QueryRequest(params);
     request.setPath("/admin/collections");
 
