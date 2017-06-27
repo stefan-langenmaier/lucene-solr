@@ -207,6 +207,8 @@ Bug Fixes
   thus disabling the global check, and replaces it with specific checks where desired via
   QueryUtils.build().  (yonik)
 
+* SOLR-10948: Fix extraction component to treat DatePointField the same as TrieDateField (hossman)
+
 Optimizations
 ----------------------
 
@@ -226,12 +228,6 @@ Optimizations
 
 * SOLR-10727: Avoid polluting the filter cache for certain types of faceting (typically ranges) when
   the base docset is empty. (David Smiley)
-
-* SOLR-9981: Performance improvements and bug fixes for the Analytics component. Performance fix that 
-  stops the reading of ALL lucene segments over and again for each stats collector. The AtomicReaderContext 
-  that refers to the "current " segment is reused. This fix shows an improvement of about 25% in query 
-  time for a dataset of ~10M (=9.8M) records. Given the nature of the fix, the improvement should get 
-  better as the dataset increases. Fix for the NPE during comparison (Houston Putman)
 
 Other Changes
 ----------------------
@@ -337,6 +333,10 @@ Other Changes
   (Jason Gerlowski, Anshum Gupta)
 
 * SOLR-10823: Add reporting period to SolrMetricReporter base class. (Christine Poerschke)
+
+* SOLR-10807: Randomize Points based numeric field types in (more) test schemas
+  - SOLR-10946: Randomize the usage of Points based numerics in solrj test schemas (hossman)
+  - SOLR-10947: Randomize the usage of Points based numerics in contrib test schemas (hossman)
 
 ==================  6.7.0 ==================
 
